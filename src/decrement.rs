@@ -13,9 +13,13 @@ impl DecrementContract {
         let mut count: i32 = env.storage().instance().get(&COUNTER).unwrap_or(0); // If no value set, assume 0.
         log!(&env, "count: {}", count);
 
+        
         // Decrements the count.
         count -= 1;
-
+        
+        if count < -2 {
+            panic!("Decrement: Cannot be less than -2");
+        }
         // Save the count.
         env.storage().instance().set(&COUNTER, &count);
 
