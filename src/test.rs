@@ -73,3 +73,24 @@ fn test_increment_decrement() {
     
     std::println!("{}", env.logs().all().join("\n"));
 }
+
+
+#[test]
+#[should_panic(expected = "Decrement: Cannot be less than -2")]
+fn test_increment_decrement_less_than_minus_2() {
+    let env = Env::default();
+    let contract_id = env.register_contract_wasm(None, increment_decrement::WASM);
+    let client = IncrementDecrementContractClient::new(&env, &contract_id);
+
+    assert_eq!(client.increment(), 1);
+    assert_eq!(client.increment(), 2);
+    assert_eq!(client.increment(), 3);
+    assert_eq!(client.decrement(), 2);
+    assert_eq!(client.decrement(), 1);
+    assert_eq!(client.decrement(), 0);
+    assert_eq!(client.decrement(), -1);
+    assert_eq!(client.decrement(), -2);
+    client.decrement();
+
+    std::println!("{}", env.logs().all().join("\n"));
+}
